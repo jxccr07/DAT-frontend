@@ -2,7 +2,8 @@ import { NextResponse, type NextRequest } from "next/server";
 import { defaultLocale, hasLocale } from "@/i18n/types";
 
 const SESSION_COOKIE = "dat_session";
-const LOCALE_COOKIE = "dat_locale";
+// Renamed from "dat_locale": the old cookie was often set from the browser language, not by the visitor.
+const LOCALE_COOKIE = "dat_lang";
 const PUBLIC_PAGES = new Set(["login", "advisor-login", "terms"]);
 
 function preferredLocale(request: NextRequest) {
