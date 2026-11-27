@@ -6,15 +6,9 @@ const LOCALE_COOKIE = "dat_locale";
 const PUBLIC_PAGES = new Set(["login", "advisor-login", "terms"]);
 
 function preferredLocale(request: NextRequest) {
+  // A language the visitor picked before wins; otherwise the site opens in Arabic.
   const saved = request.cookies.get(LOCALE_COOKIE)?.value;
-  if (saved && hasLocale(saved)) return saved;
-
-  const header = request.headers.get("accept-language") ?? "";
-  const match = header
-    .split(",")
-    .map((part) => part.split(";")[0].trim().slice(0, 2).toLowerCase())
-    .find((code) => hasLocale(code));
-  return match ?? defaultLocale;
+  return saved && hasLocale(saved) ? saved : defaultLocale;
 }
 
 /**
