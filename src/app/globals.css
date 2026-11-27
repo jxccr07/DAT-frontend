@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+/* Class-based dark mode (toggled on <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Palette taken from the DAT logo:
+ *   ink / navy  #1E2F52   — the "D" and "T"
+ *   brand blue  #2A5BD7   — the "A" and the square dot
+ * The small blue square from the logo is reused as the section marker (.marker).
+ */
+:root {
+  --bg: #f3f5f9;
+  --surface: #ffffff;
+  --surface-2: #eef1f6;
+  --fg: #16213a;
+  --muted: #5a6478;
+  --line: #dbe1ea;
+  --navy: #1e2f52;
+  --navy-fg: #ffffff;
+  --brand: #2a5bd7;
+  --brand-fg: #ffffff;
+  --brand-soft: #e7eefc;
+  --ok: #16794a;
+  --ok-soft: #e3f4ea;
+  --warn: #9a5b00;
+  --warn-soft: #fdf1dc;
+  --bad: #b42318;
+  --bad-soft: #fdeceb;
+  --info: #1d5f94;
+  --info-soft: #e5f0f9;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0d1424;
+  --surface: #141d31;
+  --surface-2: #1b263d;
+  --fg: #e6ebf4;
+  --muted: #98a3b8;
+  --line: #26334d;
+  --navy: #0a1120;
+  --navy-fg: #e6ebf4;
+  --brand: #6b95f2;
+  --brand-fg: #0d1424;
+  --brand-soft: #1c2b4d;
+  --ok: #5ccf8f;
+  --ok-soft: #133224;
+  --warn: #f0b252;
+  --warn-soft: #33270f;
+  --bad: #f2837a;
+  --bad-soft: #3a1a1a;
+  --info: #79b4e8;
+  --info-soft: #132a3f;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-navy: var(--navy);
+  --color-navy-fg: var(--navy-fg);
+  --color-brand: var(--brand);
+  --color-brand-fg: var(--brand-fg);
+  --color-brand-soft: var(--brand-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --font-sans: var(--font-plex-arabic), var(--font-plex), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-bg text-fg antialiased;
+    font-feature-settings: "tnum";
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand;
+  }
+  ::selection {
+    @apply bg-brand text-brand-fg;
+  }
+  /* Tailwind v4 dropped the pointer cursor on buttons; anything clickable shows the hand again. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="radio"],
+  [role="switch"],
+  [role="menuitem"],
+  select:not(:disabled),
+  summary,
+  label:has(> input[type="checkbox"]),
+  input[type="checkbox"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Reusable component utilities (Tailwind v4 @utility so they compose with @apply and variants) */
+@utility card {
+  @apply rounded-lg border border-line bg-surface;
+}
+@utility marker {
+  /* the logo's square dot */
+  @apply inline-block size-2 shrink-0 rounded-[2px] bg-brand;
+}
+@utility btn {
+  @apply inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-medium transition-colors
+    disabled:pointer-events-none disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn bg-brand text-brand-fg hover:bg-brand/90;
+}
+@utility btn-navy {
+  /* In dark mode the button is blue with dark text, so its hover must stay blue too (not navy). */
+  @apply btn bg-navy text-navy-fg hover:bg-navy/90 dark:bg-brand dark:text-brand-fg dark:hover:bg-brand/85;
+}
+@utility btn-ghost {
+  @apply btn text-fg hover:bg-surface-2;
+}
+@utility btn-outline {
+  @apply btn border border-line bg-surface hover:bg-surface-2;
+}
+@utility btn-danger {
+  @apply btn bg-bad text-white hover:bg-bad/90 dark:text-bg;
+}
+@utility input {
+  @apply h-11 w-full rounded-md border border-line bg-surface px-3.5 text-sm text-fg transition
+    placeholder:text-muted/70 focus:border-brand focus:ring-3 focus:ring-brand/20 focus:outline-none
+    aria-invalid:border-bad;
+}
+@utility skeleton {
+  @apply animate-pulse rounded-md bg-surface-2;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+  .card {
+    break-inside: avoid;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
